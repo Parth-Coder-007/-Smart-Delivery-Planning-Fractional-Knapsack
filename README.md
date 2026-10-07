@@ -105,27 +105,6 @@ Therefore:
 * **Sorting:** Selection Sort
 * **Data Structures:** Arrays
 
-## Time Complexity
-
-The program uses **Selection Sort** to arrange packages according to their Value/Weight ratio.
-
-* Calculating ratios: **O(n)**
-* Selection Sort: **O(n²)**
-* Selecting packages: **O(n)**
-
-Therefore, the overall time complexity is:
-
-### **O(n²)**
-
-The dominant operation is Selection Sort.
-
-### Space Complexity
-
-The program uses arrays to store package information.
-
-Therefore, the space complexity is:
-
-### **O(n)**
 
 ## Functions Used
 
