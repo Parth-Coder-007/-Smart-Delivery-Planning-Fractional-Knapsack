@@ -3,17 +3,13 @@
 #define MAX 100
 
 int id[MAX];
-float value[MAX];
-float weight[MAX];
-float ratio[MAX];
-float fraction[MAX];
+float profit[MAX], weight[MAX], ratio[MAX], fraction[MAX];
 
 int n = 0;
 float capacity = 0;
-float maxValue = 0;
+float maxProfit = 0;
 float totalWeight = 0;
 
-/* Enter Package Details */
 void enterDetails()
 {
     int i;
@@ -27,14 +23,14 @@ void enterDetails()
 
         printf("\nPackage %d\n", i + 1);
 
-        printf("Enter value: ");
-        scanf("%f", &value[i]);
+        printf("Enter profit: ");
+        scanf("%f", &profit[i]);
 
         printf("Enter weight: ");
         scanf("%f", &weight[i]);
 
         if (weight[i] > 0)
-            ratio[i] = value[i] / weight[i];
+            ratio[i] = profit[i] / weight[i];
         else
             ratio[i] = 0;
 
@@ -44,14 +40,12 @@ void enterDetails()
     printf("\nEnter vehicle capacity: ");
     scanf("%f", &capacity);
 
-    maxValue = 0;
+    maxProfit = 0;
     totalWeight = 0;
 
     printf("\nPackage details entered successfully.\n");
 }
 
-
-/* Display Package Details */
 void displayDetails()
 {
     int i;
@@ -62,25 +56,17 @@ void displayDetails()
         return;
     }
 
-    printf("\n-----------------------------------------\n");
-    printf("ID\tValue\tWeight\tRatio\n");
-    printf("-----------------------------------------\n");
+    printf("\nID\tProfit\tWeight\tRatio\n");
 
     for (i = 0; i < n; i++)
     {
         printf("%d\t%.2f\t%.2f\t%.2f\n",
-               id[i],
-               value[i],
-               weight[i],
-               ratio[i]);
+               id[i], profit[i], weight[i], ratio[i]);
     }
 
-    printf("-----------------------------------------\n");
-    printf("Capacity = %.2f\n", capacity);
+    printf("\nCapacity = %.2f\n", capacity);
 }
 
-
-/* Calculate Value/Weight Ratio */
 void calculateRatio()
 {
     int i;
@@ -91,28 +77,22 @@ void calculateRatio()
         return;
     }
 
+    printf("\nProfit/Weight Ratio:\n");
+
     for (i = 0; i < n; i++)
     {
         if (weight[i] > 0)
-            ratio[i] = value[i] / weight[i];
+            ratio[i] = profit[i] / weight[i];
         else
             ratio[i] = 0;
-    }
 
-    printf("\nValue/Weight Ratio:\n");
-
-    for (i = 0; i < n; i++)
-    {
         printf("Package %d = %.2f\n", id[i], ratio[i]);
     }
 }
 
-
-/* Selection Sort - Decreasing Ratio */
 void sortPackages()
 {
-    int i, j, maxIndex;
-
+    int i, j;
     int tempID;
     float temp;
 
@@ -124,62 +104,42 @@ void sortPackages()
 
     calculateRatio();
 
-    /*
-       Selection Sort:
-       Find the package having the maximum ratio
-       and place it at the current position.
-    */
-
     for (i = 0; i < n - 1; i++)
+{
+    for (j = 0; j < n - 1; j++)
     {
-        maxIndex = i;
-
-        for (j = i + 1; j < n; j++)
+        if (ratio[j] < ratio[j + 1])
         {
-            if (ratio[j] > ratio[maxIndex])
-            {
-                maxIndex = j;
-            }
+            temp = ratio[j];
+            ratio[j] = ratio[j + 1];
+            ratio[j + 1] = temp;
+
+            temp = profit[j];
+            profit[j] = profit[j + 1];
+            profit[j + 1] = temp;
+
+            temp = weight[j];
+            weight[j] = weight[j + 1];
+            weight[j + 1] = temp;
+
+            tempID = id[j];
+            id[j] = id[j + 1];
+            id[j + 1] = tempID;
         }
-
-        /* Swap ID */
-        tempID = id[i];
-        id[i] = id[maxIndex];
-        id[maxIndex] = tempID;
-
-        /* Swap Value */
-        temp = value[i];
-        value[i] = value[maxIndex];
-        value[maxIndex] = temp;
-
-        /* Swap Weight */
-        temp = weight[i];
-        weight[i] = weight[maxIndex];
-        weight[maxIndex] = temp;
-
-        /* Swap Ratio */
-        temp = ratio[i];
-        ratio[i] = ratio[maxIndex];
-        ratio[maxIndex] = temp;
     }
+}
 
-    printf("\nPackages sorted using Selection Sort.\n");
+    printf("\nPackages sorted by decreasing ratio.\n");
 
-    printf("\nID\tValue\tWeight\tRatio\n");
-    printf("-----------------------------------------\n");
+    printf("\nID\tProfit\tWeight\tRatio\n");
 
     for (i = 0; i < n; i++)
     {
         printf("%d\t%.2f\t%.2f\t%.2f\n",
-               id[i],
-               value[i],
-               weight[i],
-               ratio[i]);
+               id[i], profit[i], weight[i], ratio[i]);
     }
 }
 
-
-/* Find Maximum Value */
 void findMaximumValue()
 {
     int i;
@@ -191,73 +151,57 @@ void findMaximumValue()
         return;
     }
 
-    /* Sort packages according to ratio */
     sortPackages();
 
     remainingCapacity = capacity;
-
-    maxValue = 0;
+    maxProfit = 0;
     totalWeight = 0;
 
     for (i = 0; i < n; i++)
-    {
         fraction[i] = 0;
-    }
-
-    /* Greedy selection */
 
     for (i = 0; i < n; i++)
     {
         if (remainingCapacity <= 0)
             break;
 
-        /* Complete package */
         if (weight[i] <= remainingCapacity)
         {
             fraction[i] = 1;
 
-            remainingCapacity =
-                remainingCapacity - weight[i];
+            remainingCapacity = remainingCapacity - weight[i];
 
-            totalWeight =
-                totalWeight + weight[i];
+            totalWeight = totalWeight + weight[i];
 
-            maxValue =
-                maxValue + value[i];
+            maxProfit = maxProfit + profit[i];
         }
-
-        /* Fraction of package */
         else
         {
-            fraction[i] =
-                remainingCapacity / weight[i];
+            fraction[i] = remainingCapacity / weight[i];
 
-            totalWeight =
-                totalWeight + remainingCapacity;
+            totalWeight = totalWeight + remainingCapacity;
 
-            maxValue =
-                maxValue +
-                (value[i] * fraction[i]);
+            maxProfit = maxProfit + (ratio[i] * remainingCapacity);
 
             remainingCapacity = 0;
         }
     }
 
-    printf("\nMaximum value calculated successfully.\n");
+    printf("\nMaximum profit calculated successfully.\n");
 }
 
-
-/* Display Selected Packages */
 void displaySelectedPackages()
 {
     int i;
 
-    printf("\n====================================================\n");
-    printf("              SELECTED PACKAGES\n");
-    printf("====================================================\n");
+    if (n == 0)
+    {
+        printf("\nNo package details available.\n");
+        return;
+    }
 
-    printf("ID\tFraction\tSelected Weight\tSelected Value\n");
-    printf("----------------------------------------------------\n");
+    printf("\nSelected Packages\n");
+    printf("ID\tFraction\tWeight\t\tProfit\n");
 
     for (i = 0; i < n; i++)
     {
@@ -267,27 +211,21 @@ void displaySelectedPackages()
                    id[i],
                    fraction[i],
                    weight[i] * fraction[i],
-                   value[i] * fraction[i]);
+                   profit[i] * fraction[i]);
         }
     }
 
-    printf("----------------------------------------------------\n");
-
-    printf("Total Weight Used = %.2f\n", totalWeight);
-    printf("Maximum Value      = %.2f\n", maxValue);
-
-    printf("====================================================\n");
+    printf("\nTotal Weight Used = %.2f\n", totalWeight);
+    printf("Maximum Profit = %.2f\n", maxProfit);
 }
 
-
-/* Main Function */
 int main()
 {
     int choice;
 
     do
     {
-        printf("\n\n========== FRACTIONAL KNAPSACK ==========\n");
+        printf("\nFRACTIONAL KNAPSACK\n");
         printf("1. Enter Package Details\n");
         printf("2. Display Package Details\n");
         printf("3. Calculate Value/Weight Ratio\n");
@@ -295,7 +233,6 @@ int main()
         printf("5. Find Maximum Value\n");
         printf("6. Display Selected Packages\n");
         printf("7. Exit\n");
-        printf("=========================================\n");
 
         printf("Enter your choice: ");
         scanf("%d", &choice);
