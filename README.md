@@ -102,7 +102,7 @@ Therefore:
 * **Language:** C
 * **Algorithm:** Fractional Knapsack
 * **Technique:** Greedy Method
-* **Sorting:** Selection Sort
+* **Sorting:** Bubble Sort
 * **Data Structures:** Arrays
 
 
